@@ -31,6 +31,19 @@ App = {
     });
   },
 
+  createCandidate: function() {
+    var candidateName = $('#candidateName').val();
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance.addCandidate(candidateName, { from: App.account });
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").hide();
+      $("#loader").show();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+
   render: function() {
     var electionInstance;
     var loader = $("#loader");
@@ -55,7 +68,7 @@ App = {
       electionInstance = instance;
       return electionInstance.checkRole();
     }).then(function(role) {
-
+      
       if(role.toNumber() == 1){
         // Pindah ke halaman admin
         loader.hide();
@@ -85,10 +98,9 @@ App = {
     }).catch(function(error) {
       console.warn(error);
     });
-
-
   }
 };
+
 
 $(function() {
   $(window).load(function() {
