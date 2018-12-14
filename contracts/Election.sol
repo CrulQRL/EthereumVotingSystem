@@ -16,10 +16,9 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0xB2702B2a9CC41f7a11fE1853fba5470c0733755C);
+        addAdmin(0xE8298B645Ee95e099e12542d9be6F6f9bC93627D);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
-        setEndTime(2000000000);
     }
 
     // --------- Add Candidate Stuff ---------
@@ -52,14 +51,16 @@ contract Election {
         }
     }
 
-    function setEndTime (uint end) private {
+    function setEndTime (uint end) public {
         endTime = end;
     }
 
     function isVotingEnd () view public returns (bool result){
-        if(block.timestamp <= endTime) {
+        if(block.timestamp > endTime) {
+            // Waktu voting telah habis
             return true;
         } else {
+            // Waktu voting belum habis
             return false;
         }
     }

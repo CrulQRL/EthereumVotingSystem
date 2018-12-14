@@ -35,4 +35,17 @@ contract("Election", function(accounts) {
     });
   });
 
+  it("check if vote time is over", function() {
+    return Election.deployed().then(function(instance) {
+      electionInstance = instance;
+      electionInstance.setEndTime(50)
+      return electionInstance.isVotingEnd()
+    }).then(function(result) {
+      assert.equal(result, true, "Voting period is over");
+      electionInstance.setEndTime(5000000000)
+      return electionInstance.isVotingEnd()
+    }).then(function(result) {
+      assert.equal(result, false, "Voting period isn't over yet");
+    })
+  });
 });
