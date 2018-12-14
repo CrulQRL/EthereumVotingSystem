@@ -49,7 +49,7 @@ contract Election {
         }
     }
 
-    function vote () constant public returns(uint _candidateId) {
+    function vote (uint _candidateId) constant public {
         // require that they haven't voted before
         require(!voters[msg.sender]);
 
