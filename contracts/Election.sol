@@ -21,6 +21,8 @@ contract Election {
 
     // Read/write Candidates
     mapping(uint => Candidate) public candidates;
+    // Store accounts that have voted
+    mapping(address => bool) public voters;
 
     function addCandidate (string _name) private {
         candidatesCount ++;
@@ -32,7 +34,7 @@ contract Election {
     }
 
     function checkRole () constant public returns(uint role){
-        // Lakukan pengecekan apakah user merupakan admin atau bukan
+        // Lakukan penpm ngecekan apakah user merupakan admin atau bukan
         // msg.sender isinya address dari pemanggil
         // role bernilai 1 untuk admin dan 2 untuk user
         if(admins[msg.sender] == true) {
@@ -40,5 +42,19 @@ contract Election {
         } else {
             role = 2;
         }
+    }
+
+    function vote () constant public returns(uint _candidateId) {
+        // require that they haven't voted before
+        require(!voters[msg.sender]);
+
+        // require a valid candidate
+        require(_candidateId > 0 && _candidateId <= candidatesCount);
+
+        // record that voter has voted
+        voters[msg.sender] = true;
+
+        // update candidate vote Count
+        candidates[_candidateId].voteCount ++;
     }
 }
