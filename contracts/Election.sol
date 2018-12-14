@@ -8,6 +8,12 @@ contract Election {
         string name;
         uint voteCount;
     }
+
+    struct User{
+        uint id;
+        address userAddress;
+    }
+    
     // Store Candidates Count
     uint public candidatesCount;
     // Store Voting End Time
@@ -20,6 +26,9 @@ contract Election {
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
         setEndTime(2000000000);
+        addUser(0x4AE71950b1DCC2AF3E78BB887dfC7CC47cc353dc);
+        addUser(0xeb2e0c694a8B885a1B6a044B6FAE7BE8DE4459ef);
+        addUser(0x46a9fAE1468A753543756233d143e42A500560e4);
     }
 
     // --------- Add Candidate Stuff ---------
@@ -36,6 +45,17 @@ contract Election {
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
+
+    // ------------- ADD USER STUFF ----------------
+
+    uint public userCount;
+    mapping(uint => User) public users;
+
+    function addUser (address _userAddress) public {
+        userCount ++;
+        users[userCount] = User(userCount, _userAddress);
+    }
+    // ----------------------------------------------
 
     function addAdmin (address _userAddress) private {
         admins[_userAddress] = true;

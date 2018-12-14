@@ -66,13 +66,13 @@ App = {
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
       electionInstance = instance;
+      loader.hide();
+      content.show();
       return electionInstance.checkRole();
     }).then(function(role) {
       
       if(role.toNumber() == 1){
         // Pindah ke halaman admin
-        loader.hide();
-        content.show();
         return electionInstance.candidatesCount();
       }else{
         // Pindah ke halaman user
@@ -90,6 +90,22 @@ App = {
           
           var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td></tr>"
           candidatesResults.append(candidateTemplate);
+        });
+      }
+
+      return electionInstance.userCount();
+    }).then(function(usersCount) {
+      var usersResults = $("#usersResults");
+      usersResults.empty();
+
+      for (var i = 1; i <= usersCount; i++) {
+        electionInstance.users(i).then(function(user) {
+          var id = user[0];
+          var address = user[1];
+          electionInstance.voters(address).then(function(isVoted) {
+            var userTemplate = "<tr><th>" + id + "</th><td>" + address + "</td><td>" + isVoted + "</td></tr>"
+            usersResults.append(userTemplate);
+          });
         });
       }
 

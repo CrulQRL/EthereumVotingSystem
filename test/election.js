@@ -5,7 +5,7 @@ contract("Election", function(accounts) {
 
   it("Check user role is Admin", function() {
     return Election.deployed().then(function(instance) {
-      return instance.checkRole({ from: "0x040834eedb2b6ec8e749d6d1ee07b9e0d3149169" });
+      return instance.checkRole({ from: "0xb2702b2a9cc41f7a11fe1853fba5470c0733755c" });
     }).then(function(role) {
         assert.equal(role.toNumber(), 1);
     });
@@ -33,6 +33,23 @@ contract("Election", function(accounts) {
       assert.equal(candidate[1], "Candidate dummy 2", "contains the correct name");
       assert.equal(candidate[2].toNumber(), 0, "contains the correct votes count");
     });
+  });
+
+  it("initializes with three users", function() {
+    return Election.deployed().then(function(instance) {
+      return instance.userCount();
+    }).then(function(count) {
+      assert.equal(count.toNumber(), 3);
+    });
+  });
+
+  it("it initializes the users with the correct values", function() {
+    return Election.deployed().then(function(instance) {
+      electionInstance = instance;
+      return electionInstance.users(accounts[1]);
+    }).then(function(candidate) {
+      assert.equal(1, 1, "contains the correct id");
+    })
   });
 
 });
