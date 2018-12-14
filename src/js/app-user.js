@@ -35,7 +35,6 @@ App = {
     var electionInstance;
     var loader = $("#loader");
     var content = $("#content");
-    var pageTitle = $("#page_identifier");
 
     loader.show();
     content.hide();
@@ -52,7 +51,21 @@ App = {
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
       electionInstance = instance;
-      $("#page_identifier").html("User Dashboard");
+      return electionInstance.candidatesCount();
+    }).then(function(candidatesCount) {
+      var candidatesResults = $("#candidatesResults");
+      candidatesResults.empty();
+
+      for (var i = 1; i <= candidatesCount; i++) {
+        electionInstance.candidates(i).then(function(candidate) {
+          var id = candidate[0];
+          var name = candidate[1];
+          
+          var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td></tr>"
+          candidatesResults.append(candidateTemplate);
+        });
+      }
+
       loader.hide();
       content.show();
     }).catch(function(error) {

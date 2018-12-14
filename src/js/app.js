@@ -35,7 +35,6 @@ App = {
     var electionInstance;
     var loader = $("#loader");
     var content = $("#content");
-    var pageTitle = $("#page_identifier");
 
     loader.show();
     content.hide();
@@ -54,19 +53,33 @@ App = {
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
       electionInstance = instance;
-    return electionInstance.checkRole();
+      return electionInstance.checkRole();
     }).then(function(role) {
-      console.log("Masuik validasi role")
-      console.log(role)
-      console.log(role.toNumber())
+
       if(role.toNumber() == 1){
         // Pindah ke halaman admin
-        $("#page_identifier").html("Admin Dashboard");
+        loader.hide();
+        content.show();
+        return electionInstance.candidatesCount();
       }else{
         // Pindah ke halaman user
         window.location.replace("http://localhost:3000/index-user.html");
       }
-    
+      
+    }).then(function(candidatesCount) {
+      var candidatesResults = $("#candidatesResults");
+      candidatesResults.empty();
+
+      for (var i = 1; i <= candidatesCount; i++) {
+        electionInstance.candidates(i).then(function(candidate) {
+          var id = candidate[0];
+          var name = candidate[1];
+          
+          var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td></tr>"
+          candidatesResults.append(candidateTemplate);
+        });
+      }
+
       loader.hide();
       content.show();
     }).catch(function(error) {
