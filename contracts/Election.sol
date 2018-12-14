@@ -14,15 +14,20 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0x040834eeDb2b6Ec8E749D6d1eE07B9e0d3149169);
+        addAdmin(0xB2702B2a9CC41f7a11fE1853fba5470c0733755C);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
     }
 
+    // --------- Add Candidate Stuff ---------
+
     // Read/write Candidates
     mapping(uint => Candidate) public candidates;
 
-    function addCandidate (string _name) private {
+    function addCandidate (string _name) public {
+        // yang add harus admin
+        require(admins[msg.sender] == true);
+
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
