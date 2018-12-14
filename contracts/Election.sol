@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 contract Election {
 
@@ -16,7 +16,7 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0xB2702B2a9CC41f7a11fE1853fba5470c0733755C);
+        addAdmin(0xa59dC7F06CB5ed4E1Dd474A74751076611fd4f3F);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
         setEndTime(2000000000);
@@ -64,7 +64,7 @@ contract Election {
         }
     }
 
-    function vote (uint _candidateId) constant public {
+    function vote (uint _candidateId) public {
         // require that they haven't voted before
         require(!voters[msg.sender]);
 
