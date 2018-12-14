@@ -20,7 +20,15 @@
             <p class="text-center">Loading...</p>
           </div>
           <div id="content" style="display: none;">
+
             <!-- Masukin content disini -->
+            <h4>Input kandidat baru</h4>
+            <form onSubmit="App.createCandidate(); return false;">
+              Nama:<br>
+              <input type="text" id="candidateName" name="name" id=><br><br>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <br>
             <table class="table">
               <thead>
                 <tr>
@@ -31,7 +39,9 @@
               <tbody id="candidatesResults">
               </tbody>
             </table>
+
             <p id="accountAddress" class="text-center"></p>
+
           </div>
         </div>
       </div>
