@@ -40,7 +40,7 @@ contract Election {
         admins[_userAddress] = true;
     }
 
-    function checkRole () constant public returns(uint role){
+    function checkRole () view public returns(uint role){
         // Lakukan penpm ngecekan apakah user merupakan admin atau bukan
         // msg.sender isinya address dari pemanggil
         // role bernilai 1 untuk admin dan 2 untuk user
@@ -52,6 +52,9 @@ contract Election {
     }
 
     function setEndTime (uint end) public {
+        // yang add harus admin
+        require(admins[msg.sender] == true);
+
         endTime = end;
     }
 
@@ -65,7 +68,7 @@ contract Election {
         }
     }
 
-    function vote (uint _candidateId) constant public {
+    function vote (uint _candidateId) view public {
         // require that they haven't voted before
         require(!voters[msg.sender]);
 
