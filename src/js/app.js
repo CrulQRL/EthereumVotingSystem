@@ -93,19 +93,18 @@ App = {
         });
       }
 
-      return electionInstance.userCount();
+      return electionInstance.getUserCount();
     }).then(function(usersCount) {
       var usersResults = $("#usersResults");
       usersResults.empty();
-
-      for (var i = 1; i <= usersCount; i++) {
-        electionInstance.users(i).then(function(user) {
-          var id = user[0];
-          var address = user[1];
-          electionInstance.voters(address).then(function(isVoted) {
-            var userTemplate = "<tr><th>" + id + "</th><td>" + address + "</td><td>" + isVoted + "</td></tr>"
-            usersResults.append(userTemplate);
-          });
+      indexUser = 1;
+      for (var i = 0; i < usersCount; i++) {
+        electionInstance.getUserAtIndex(i).then(function(user) {
+          var address = user[0];
+          var isVoted = user[1];
+          var userTemplate = "<tr><th>" + indexUser + "</th><td>" + address + "</td><td>" + isVoted + "</td></tr>"
+          usersResults.append(userTemplate);
+          indexUser++
         });
       }
 

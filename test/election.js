@@ -35,21 +35,12 @@ contract("Election", function(accounts) {
     });
   });
 
-  it("initializes with three users", function() {
+  it("Check user is registered", function() {
     return Election.deployed().then(function(instance) {
-      return instance.userCount();
-    }).then(function(count) {
-      assert.equal(count.toNumber(), 3);
+      return instance.isUser("0x4ae71950b1dcc2af3e78bb887dfc7cc47cc353dc");
+    }).then(function(isRegistered) {
+        assert.equal(isRegistered, true);
     });
-  });
-
-  it("it initializes the users with the correct values", function() {
-    return Election.deployed().then(function(instance) {
-      electionInstance = instance;
-      return electionInstance.users(accounts[1]);
-    }).then(function(candidate) {
-      assert.equal(1, 1, "contains the correct id");
-    })
   });
 
 });
