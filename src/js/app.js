@@ -32,13 +32,32 @@ App = {
   },
 
   createCandidate: function() {
+    $("#content").hide();
+    $("#loader").show();
     var candidateName = $('#candidateName').val();
     App.contracts.Election.deployed().then(function(instance) {
+      console.log(typeof(App.account));
+      console.log(App.account);
       return instance.addCandidate(candidateName, { from: App.account });
     }).then(function(result) {
       // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
+      $("#content").show();
+      $("#loader").hide();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+
+  createUser: function() {
+    $("#content").hide();
+    $("#loader").show();
+    var userAddress = $('#userAddress').val().toLowerCase();
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance.insertUser(userAddress);
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").show();
+      $("#loader").hide();
     }).catch(function(err) {
       console.error(err);
     });
