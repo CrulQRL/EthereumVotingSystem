@@ -30,10 +30,13 @@ contract Election {
         addAdmin(0xE8298B645Ee95e099e12542d9be6F6f9bC93627D);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
+<<<<<<< 7fcc89e4cee1f1bd66ef0b00a380d0fe9299ee7e
+=======
+        setEndTime(1208028953);
+>>>>>>> Add voting period in front end
         // Add user address yang bisa voting
-        insertUser(0x4AE71950b1DCC2AF3E78BB887dfC7CC47cc353dc);
-        insertUser(0xeb2e0c694a8B885a1B6a044B6FAE7BE8DE4459ef);
         insertUser(0xB46189653AF2d1dD2064c45f65C4D4C8D3688aB5);
+
     }
 
     // --------- Add Candidate Stuff ---------

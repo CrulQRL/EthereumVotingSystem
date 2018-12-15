@@ -100,8 +100,18 @@ App = {
         $('#messageVote').html("This address has voted")
         $('form').hide();
       }
+
+      return electionInstance.isVotingEnd();
+
+    }).then(function(isEnded) {
+      if(isEnded) {
+        $('#messageVote').html("The voting period is ended")
+        $('form').hide();  
+      }
+
       loader.hide();
       content.show();
+
     }).catch(function(error) {
       console.warn(error);
     });
