@@ -5,7 +5,7 @@ contract("Election", function(accounts) {
 
   it("Check user role is Admin", function() {
     return Election.deployed().then(function(instance) {
-      return instance.checkRole({ from: "0x040834eedb2b6ec8e749d6d1ee07b9e0d3149169" });
+      return instance.checkRole({ from: "0xb2702b2a9cc41f7a11fe1853fba5470c0733755c" });
     }).then(function(role) {
         assert.equal(role.toNumber(), 1);
     });
@@ -48,4 +48,12 @@ contract("Election", function(accounts) {
       assert.equal(result, false, "Voting period isn't over yet");
     })
   });
+  it("Check user is registered", function() {
+    return Election.deployed().then(function(instance) {
+      return instance.isUser("0x4ae71950b1dcc2af3e78bb887dfc7cc47cc353dc");
+    }).then(function(isRegistered) {
+        assert.equal(isRegistered, true);
+    });
+  });
+
 });

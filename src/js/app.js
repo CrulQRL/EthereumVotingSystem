@@ -14,7 +14,7 @@ App = {
       web3 = new Web3(web3.currentProvider);
     } else {
       // Specify default instance if no web3 instance provided
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:7545');
       web3 = new Web3(App.web3Provider);
     }
     return App.initContract();
@@ -66,13 +66,13 @@ App = {
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
       electionInstance = instance;
+      loader.hide();
+      content.show();
       return electionInstance.checkRole();
     }).then(function(role) {
       
       if(role.toNumber() == 1){
         // Pindah ke halaman admin
-        loader.hide();
-        content.show();
         return electionInstance.candidatesCount();
       }else{
         // Pindah ke halaman user
@@ -90,6 +90,21 @@ App = {
           
           var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td></tr>"
           candidatesResults.append(candidateTemplate);
+        });
+      }
+
+      return electionInstance.getUserCount();
+    }).then(function(usersCount) {
+      var usersResults = $("#usersResults");
+      usersResults.empty();
+      indexUser = 1;
+      for (var i = 0; i < usersCount; i++) {
+        electionInstance.getUserAtIndex(i).then(function(user) {
+          var address = user[0];
+          var isVoted = user[1];
+          var userTemplate = "<tr><th>" + indexUser + "</th><td>" + address + "</td><td>" + isVoted + "</td></tr>"
+          usersResults.append(userTemplate);
+          indexUser++
         });
       }
 

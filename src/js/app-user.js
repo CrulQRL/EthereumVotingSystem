@@ -36,9 +36,10 @@ App = {
     App.contracts.Election.deployed().then(function (instance) {
       return instance.vote(candidateId, { from: App.account });
     }).then(function (result) {
-      // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
+      // // Wait for votes to update
+      // $("#content").hide();
+      // $("#loader").show();
+      location.reload()
     }).catch(function (err) {
       console.error(err);
     });
@@ -85,11 +86,18 @@ App = {
           candidatesSelect.append(candidateOption);
         });
       }
-
-      return electionInstance.voters(App.account);
+      return electionInstance.isUser(App.account)
+    }).then(function(isRegistered) {
+      // Check if user is registered
+      if(!isRegistered) {
+        $('#messageVote').html("Cannot vote, your address is not registered as a voter")
+        $('form').hide();
+      }
+      return electionInstance.isVoted(App.account);
     }).then(function(hasVoted) {
       // Do not allow a user to vote
       if(hasVoted) {
+        $('#messageVote').html("This address has voted")
         $('form').hide();
       }
       loader.hide();
