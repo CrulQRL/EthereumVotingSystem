@@ -120,6 +120,9 @@ contract Election {
         // require a valid candidate
         require(_candidateId > 0 && _candidateId <= candidatesCount);
 
+        // cannot vote if is not in voting period
+        require(isVotingEnd());
+
         // record that voter has voted
         userStructs[msg.sender].isVoted = true;
         // update candidate vote Count
