@@ -34,7 +34,7 @@ contract Election {
         // Add user address yang bisa voting
         insertUser(0x4AE71950b1DCC2AF3E78BB887dfC7CC47cc353dc);
         insertUser(0xeb2e0c694a8B885a1B6a044B6FAE7BE8DE4459ef);
-        insertUser(0x46a9fAE1468A753543756233d143e42A500560e4);
+        insertUser(0xB46189653AF2d1dD2064c45f65C4D4C8D3688aB5);
     }
 
     // --------- Add Candidate Stuff ---------

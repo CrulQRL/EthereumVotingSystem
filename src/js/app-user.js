@@ -36,9 +36,10 @@ App = {
     App.contracts.Election.deployed().then(function (instance) {
       return instance.vote(candidateId, { from: App.account });
     }).then(function (result) {
-      // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
+      // // Wait for votes to update
+      // $("#content").hide();
+      // $("#loader").show();
+      location.reload()
     }).catch(function (err) {
       console.error(err);
     });
