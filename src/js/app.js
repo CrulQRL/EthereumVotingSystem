@@ -63,6 +63,23 @@ App = {
     });
   },
 
+  revealVote: function () {
+    var electionInstance;
+    App.contracts.Election.deployed().then(function (instance) {
+      electionInstance = instance;
+      return electionInstance.isVotingEnd();
+    }).then(function(isEnd) {
+      if(isEnd) {
+        
+      } else {
+        $("#reveal-button").hide()
+        $(".reveal-candidate").html("The voting period is not ended")
+      }
+    }).catch(function (error) {
+      console.warn(error);
+    });
+  },
+
   render: function() {
     var electionInstance;
     var loader = $("#loader");
@@ -78,7 +95,6 @@ App = {
         $("#accountAddress").html("Your Account: " + account);
       }
     });
-
 
 
 

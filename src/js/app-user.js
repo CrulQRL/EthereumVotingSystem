@@ -108,7 +108,7 @@ App = {
         $('#messageVote').html("The voting period is ended")
         $('form').hide();  
       }
-
+      console.log(isEnded)
       loader.hide();
       content.show();
 

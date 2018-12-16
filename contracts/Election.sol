@@ -27,10 +27,14 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0xE8298B645Ee95e099e12542d9be6F6f9bC93627D);
+        addAdmin(0xa59dC7F06CB5ed4E1Dd474A74751076611fd4f3F);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
-        setEndTime(1208028953);
+        setEndTime(1808028953);
+
+        // Add user address yang bisa voting
+        insertUser(0xB46189653AF2d1dD2064c45f65C4D4C8D3688aB5);
+
     }
 
     // --------- Add Candidate Stuff ---------
@@ -120,7 +124,7 @@ contract Election {
         require(_candidateId > 0 && _candidateId <= candidatesCount);
 
         // cannot vote if is not in voting period
-        require(isVotingEnd());
+        require(!isVotingEnd());
 
         // record that voter has voted
         userStructs[msg.sender].isVoted = true;
