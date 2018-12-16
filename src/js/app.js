@@ -70,11 +70,29 @@ App = {
       return electionInstance.isVotingEnd();
     }).then(function(isEnd) {
       if(isEnd) {
-        
+        // Tampilim vote user
+        return electionInstance.candidatesCount();
       } else {
         $("#reveal-button").hide()
         $(".reveal-candidate").html("The voting period is not ended")
       }
+    }).then(function(candidatesCount) {
+      var candidatesResults = $("#candidatesResults");
+      candidatesResults.empty();
+
+      $(".candidate-tr").append("<th scope='col'> Vote Count </th>")
+      $("#reveal-button").hide()
+      for (var i = 1; i <= candidatesCount; i++) {
+        electionInstance.candidates(i).then(function (candidate) {
+          var id = candidate[0];
+          var name = candidate[1];
+          var voteCount = candidate[2];
+
+          var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>"+voteCount+"</td></tr>"
+          candidatesResults.append(candidateTemplate);
+        });
+      }
+      
     }).catch(function (error) {
       console.warn(error);
     });
@@ -95,8 +113,6 @@ App = {
         $("#accountAddress").html("Your Account: " + account);
       }
     });
-
-
 
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
