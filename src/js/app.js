@@ -44,6 +44,13 @@ App = {
     });
   },
 
+  setEndTime: function() {
+    var endTime = 'a';
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance;
+    })
+  },
+
   render: function() {
     var electionInstance;
     var loader = $("#loader");
