@@ -31,25 +31,39 @@
             <br>
 
             <h4>Input batas waktu pemilihan</h4>
-            <form>
+            <form onSubmit="App.setEndTime(); return false;">
               <label for="end-time">Pilih waktu:</label>
               <input type="datetime-local" id="end-time"
               max="yyyy-12-31T00:00"><br><br>
               <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+            </form><br><br>
+
+            <h4>Waktu terakhir voting</h4>
+            <h2 id="view-end-time"></h2><br><br>
 
             <h4 class="text-center">Daftar Kandidat</h4>
             <table class="table">
               <thead>
-                <tr>
+                <tr class="candidate-tr">
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
                 </tr>
               </thead>
               <tbody id="candidatesResults">
               </tbody>
+             
             </table>
+            <div class="reveal-candidate"></div><input id="reveal-button" type='button' class='btn btn-info' onClick="App.revealVote();" value='Reveal Vote Count' style="margin-bottom: 1em;" /></div>
 
+            <br>
+
+            <h4>Input user baru</h4>
+            <form onSubmit="App.createUser(); return false;">
+              Address:<br>
+              <input type="text" id="userAddress" name="name" id=><br><br>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <br>
       
             <h4 class="text-center">Daftar User</h4>
             <table class="table">

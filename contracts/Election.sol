@@ -30,10 +30,11 @@ contract Election {
         addAdmin(0xE8298B645Ee95e099e12542d9be6F6f9bC93627D);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
+        setEndTime(1208028953);
+
         // Add user address yang bisa voting
-        insertUser(0x4AE71950b1DCC2AF3E78BB887dfC7CC47cc353dc);
-        insertUser(0xeb2e0c694a8B885a1B6a044B6FAE7BE8DE4459ef);
         insertUser(0xB46189653AF2d1dD2064c45f65C4D4C8D3688aB5);
+
     }
 
     // --------- Add Candidate Stuff ---------
@@ -43,7 +44,7 @@ contract Election {
 
     function addCandidate (string _name) public {
         // yang add harus admin
-        require(admins[msg.sender] == true);
+        require(admins[msg.sender] == true, "Sender is not admin");
 
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
@@ -61,6 +62,7 @@ contract Election {
     }
 
     function insertUser(address _userAddress) public {
+        require(admins[msg.sender] == true);
         require(!isUser(_userAddress));
         userStructs[_userAddress].isVoted = false;
         userStructs[_userAddress].index = userIndex.push(_userAddress) - 1;
@@ -78,6 +80,7 @@ contract Election {
     // ---------------------------------------------- //
 
     function addAdmin (address _userAddress) private {
+        require(!admins[_userAddress]);
         admins[_userAddress] = true;
     }
 
@@ -99,7 +102,11 @@ contract Election {
         endTime = end;
     }
 
-    function isVotingEnd () view public returns (bool result){
+    function getEndTime () public view returns (uint result){
+        return endTime;
+    }
+
+    function isVotingEnd () public view returns (bool result){
         if(block.timestamp > endTime) {
             // Waktu voting telah habis
             return true;
@@ -119,6 +126,9 @@ contract Election {
 
         // require a valid candidate
         require(_candidateId > 0 && _candidateId <= candidatesCount);
+
+        // cannot vote if is not in voting period
+        require(!isVotingEnd());
 
         // record that voter has voted
         userStructs[msg.sender].isVoted = true;

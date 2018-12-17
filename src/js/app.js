@@ -32,23 +32,82 @@ App = {
   },
 
   createCandidate: function() {
+    $("#content").hide();
+    $("#loader").show();
     var candidateName = $('#candidateName').val();
+    console.log("Candidate Name: " + candidateName)
     App.contracts.Election.deployed().then(function(instance) {
+      console.log(typeof(App.account));
+      console.log(App.account);
       return instance.addCandidate(candidateName, { from: App.account });
     }).then(function(result) {
       // Wait for votes to update
-      $("#content").hide();
-      $("#loader").show();
+      $("#content").show();
+      $("#loader").hide();
     }).catch(function(err) {
       console.error(err);
     });
   },
 
   setEndTime: function() {
-    var endTime = 'a';
+    var endTime = $('#end-time').val();
+    endTime = new Date(endTime)/1000
+    console.log("input endTime: ", endTime)
     App.contracts.Election.deployed().then(function(instance) {
-      return instance;
-    })
+      return instance.setEndTime(endTime);
+    }).catch(function(err){
+      console.log(err);
+    });
+  },
+  
+  createUser: function() {
+    $("#content").hide();
+    $("#loader").show();
+    var userAddress = $('#userAddress').val().toLowerCase();
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance.insertUser(userAddress);
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").show();
+      $("#loader").hide();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+
+  revealVote: function () {
+    var electionInstance;
+    App.contracts.Election.deployed().then(function (instance) {
+      electionInstance = instance;
+      return electionInstance.isVotingEnd();
+    }).then(function(isEnd) {
+      if(isEnd) {
+        // Tampilim vote user
+        return electionInstance.candidatesCount();
+      } else {
+        $("#reveal-button").hide()
+        $(".reveal-candidate").html("The voting period is not ended")
+      }
+    }).then(function(candidatesCount) {
+      var candidatesResults = $("#candidatesResults");
+      candidatesResults.empty();
+
+      $(".candidate-tr").append("<th scope='col'> Vote Count </th>")
+      $("#reveal-button").hide()
+      for (var i = 1; i <= candidatesCount; i++) {
+        electionInstance.candidates(i).then(function (candidate) {
+          var id = candidate[0];
+          var name = candidate[1];
+          var voteCount = candidate[2];
+
+          var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>"+voteCount+"</td></tr>"
+          candidatesResults.append(candidateTemplate);
+        });
+      }
+      
+    }).catch(function (error) {
+      console.warn(error);
+    });
   },
 
   render: function() {
@@ -66,9 +125,6 @@ App = {
         $("#accountAddress").html("Your Account: " + account);
       }
     });
-
-
-
 
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
@@ -117,7 +173,18 @@ App = {
 
       loader.hide();
       content.show();
-    }).catch(function(error) {
+      return electionInstance.getEndTime();
+    }).then(function(endTime) {
+      var viewEndTime = $("#view-end-time")
+      viewEndTime.empty();
+      endTime = new Date(endTime * 1000);
+      console.log("endTime: " + endTime)
+      // date = endTime.getDate();
+      // month = endTime.getMonth();
+      // year = endTime.getFullYear();
+      viewEndTime.append(endTime);
+    })
+    .catch(function(error) {
       console.warn(error);
     });
   }
