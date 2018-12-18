@@ -8,6 +8,8 @@ RUN npm install -g truffle
 
 COPY . /app
 
+RUN truffle compile
+
 USER root
 ENTRYPOINT ["/bin/sh"]
 EXPOSE 3000 3001

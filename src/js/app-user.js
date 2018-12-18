@@ -92,7 +92,7 @@ App = {
         $('#messageVote').html("Cannot vote, your address is not registered as a voter")
         $('form').hide();
       }
-      return electionInstance.isVoted(App.account);
+      return electionInstance.hasVoted(App.account);
     }).then(function(hasVoted) {
       // Do not allow a user to vote
       if(hasVoted) {

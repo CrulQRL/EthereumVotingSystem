@@ -3,72 +3,63 @@ services:
   webserver:
     build:
       context: .
-      dockerfile: web.Dockerfile
-    entrypoint: "npm"
-    command: "run dev"
+      dockerfile: docker/web.Dockerfile
+    entrypoint: "/bin/sh"
+    command: ["-c", "truffle migrate && npm run dev"]
     networks:
       ethereum:
-        ipv4_address: 172.28.2.0
+        ipv4_address: 172.28.1.0
     ports:
     - "3000:3000"
     - "3001:3001"
     depends_on:
     - miner1
-  bootnode:
-    build:
-      context: .
-      dockerfile: miner.Dockerfile
-    entrypoint: "/usr/local/bin/bootnode"
-    command: "--nodekeyhex=6ec0e677651453b0e088b4a1294e7289fa462b38cdd5780313db82ed826bb90f --nat=extip:172.28.1.1 --verbosity=9"
-    networks:
-      ethereum:
-        ipv4_address: 172.28.1.0
   miner1:
     build:
       context: .
-      dockerfile: miner.Dockerfile
+      dockerfile: docker/miner.Dockerfile
     entrypoint: "/bin/sh"
-    # command: ["-c", "geth init /opt/volume/genesis.json && (geth account import --password /account/password.txt /account/account.txt || echo Account existed already!) && geth --unlock 0x373f339c91fd95fea40eb86f9f9981770ca9300a --password /account/password.txt && geth --networkid=1 --nodiscover --verbosity=9 --nat=extip:172.28.1.1 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --targetgaslimit=800000000 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
-    command: ["-c", "geth init /opt/volume/genesis.json && (geth account import --password /account/password.txt /account/account.txt || echo Account existed already!) && geth --unlock 0x373f339c91fd95fea40eb86f9f9981770ca9300a --password /account/password.txt --networkid=1 --nodiscover --verbosity=9 --nat=extip:172.28.1.1 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --targetgaslimit=800000000 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
+    environment:
+    - NODEKEY_HEX=2e6a1170ac47ce3ba4de62962d6a0fc6624bd1d9a53a0223d91300538f8c77be
+    command: ["-c", "mkdir -p /root/.ethereum/geth && cp /static-nodes.json /root/.ethereum/geth && geth init /genesis.json && (geth account import --password /account/password.txt /account/account.txt || echo Account existed already!) && geth --nodiscover --nodekeyhex $${NODEKEY_HEX} --unlock 0x373f339c91fd95fea40eb86f9f9981770ca9300a --password /account/password.txt --networkid=1 --verbosity=3 --mine --minerthreads=1 --targetgaslimit=800000000 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --nat=extip:172.28.1.1  --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'admin,personal,db,eth,net,web3,txpool,miner,shh,debug'"]
     volumes:
-    - ./volume:/opt/volume
     - miner1:/root/.ethereum
     - miner1hash:/root/.ethash
-    depends_on:
-    - bootnode
     ports:
     - "8545:8545"
     networks:
       ethereum:
         ipv4_address: 172.28.1.1
-  # miner2:
-  #   image: ethereum/client-go:alltools-v1.8.20
-  #   entrypoint: "/bin/sh"
-  #   command: ["-c", "geth init /opt/volume/genesis.json && geth --networkid=1 --verbosity=9 --nat=extip:172.28.1.2 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
-  #   volumes:
-  #   - ./volume:/opt/volume
-  #   - miner2:/root/.ethereum
-  #   - miner2hash:/root/.ethash
-  #   depends_on:
-  #   - bootnode
-  #   - miner1
-  #   networks:
-  #     ethereum:
-  #       ipv4_address: 172.28.1.2
-  # miner3:
-  #   image: ethereum/client-go:alltools-v1.8.20
-  #   entrypoint: "/bin/sh"
-  #   command: ["-c", "geth init  /opt/volume/genesis.json && geth --networkid=1 --nodiscover --nat=extip:172.28.1.3 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
-  #   volumes:
-  #   - ./volume:/opt/volume
-  #   - miner3:/root/.ethereum
-  #   - miner3hash:/root/.ethash
-  #   depends_on:
-  #   - bootnode
-  #   - miner2
-  #   networks:
-  #     ethereum:
-  #       ipv4_address: 172.28.1.3
+  miner2:
+    build:
+      context: .
+      dockerfile: docker/miner.Dockerfile
+    entrypoint: "/bin/sh"
+    environment:
+    - NODEKEY_HEX=8ac6a34569fd5ed8ee5bd96e18e8ba73af270daefc509e52e52cee127e85e449
+    command: ["-c", "mkdir -p /root/.ethereum/geth && cp /static-nodes.json /root/.ethereum/geth && geth init /genesis.json && geth --nodiscover --nodekeyhex $${NODEKEY_HEX} --networkid=1 --verbosity=3 --nat=extip:172.28.1.2 --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'admin,personal,db,eth,net,web3,txpool,miner,shh,debug'"]
+    volumes:
+    - miner2:/root/.ethereum
+    depends_on:
+    - miner1
+    networks:
+      ethereum:
+        ipv4_address: 172.28.1.2
+  miner3:
+    build:
+      context: .
+      dockerfile: docker/miner.Dockerfile
+    entrypoint: "/bin/sh"
+    environment:
+    - NODEKEY_HEX=80ff7ca85d8bd5f59dadf78659baf05c28d81a38cc3e7e4078f56b4f547f68de
+    command: ["-c", "mkdir -p /root/.ethereum/geth && cp /static-nodes.json /root/.ethereum/geth && geth init /genesis.json && geth --nodiscover --nodekeyhex $${NODEKEY_HEX} --networkid=1 --verbosity=3 --nat=extip:172.28.1.3 --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'admin,personal,db,eth,net,web3,txpool,miner,shh,debug'"]
+    volumes:
+    - miner3:/root/.ethereum
+    depends_on:
+    - miner1
+    networks:
+      ethereum:
+        ipv4_address: 172.28.1.3
 networks:
   ethereum:
     driver: bridge
@@ -82,6 +73,4 @@ volumes:
   miner1:
   miner1hash:
   miner2:
-  miner2hash:
   miner3: 
-  miner3hash:

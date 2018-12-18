@@ -27,14 +27,10 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0xa59dC7F06CB5ed4E1Dd474A74751076611fd4f3F);
-        addCandidate("Candidate dummy 1");
-        addCandidate("Candidate dummy 2");
-        setEndTime(1208028953);
-
-        // Add user address yang bisa voting
-        insertUser(0xB46189653AF2d1dD2064c45f65C4D4C8D3688aB5);
-
+        addAdmin(0x373F339C91fD95FEA40eB86F9F9981770CA9300a);
+        addCandidate("Candidate 1");
+        addCandidate("Candidate 2");
+        setEndTime(1545264000);
     }
 
     // --------- Add Candidate Stuff ---------
@@ -116,7 +112,7 @@ contract Election {
         }
     }
 
-    function isVoted(address _userAddress) view public returns (bool isVoted){
+    function hasVoted(address _userAddress) public view returns (bool isVoted){
         return userStructs[_userAddress].isVoted;
     }
 
