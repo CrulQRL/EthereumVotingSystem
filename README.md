@@ -14,7 +14,7 @@ A dApp for voting using Ethereum. An ethereum private network deployment using d
 
 ## Starting Up
 - Run `docker-compose up --build`. Use `docker-compose down -v && docker-compose up --build` if you want to hard reset the blockchain with new `docker/genesis.json` or `contracts/Election.sol` configuration.
-- Access the webserver at `localhost:3000` with metamask installed and you will see the UI depending on your role in the smart contract (voter/admin/non-voter).
+- Access the webserver at `localhost:3000` with metamask installed (and point the network to localhost:8545) and you will see the UI depending on your role in the smart contract (voter/admin/non-voter).
 
 ## Shutting Down
 - Run `docker-compose down`
