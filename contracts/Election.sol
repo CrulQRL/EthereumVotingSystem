@@ -27,7 +27,7 @@ contract Election {
     // Constructor
     constructor () public {
         // Add address admin
-        addAdmin(0xE8298B645Ee95e099e12542d9be6F6f9bC93627D);
+        addAdmin(0xa59dC7F06CB5ed4E1Dd474A74751076611fd4f3F);
         addCandidate("Candidate dummy 1");
         addCandidate("Candidate dummy 2");
         setEndTime(1208028953);

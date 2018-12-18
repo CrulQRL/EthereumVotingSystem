@@ -44,6 +44,7 @@ App = {
 
   render: function() {
     var electionInstance;
+    var candidateCount;
     var loader = $("#loader");
     var content = $("#content");
 
@@ -64,6 +65,7 @@ App = {
       electionInstance = instance;
       return electionInstance.candidatesCount();
     }).then(function(candidatesCount) {
+      candidateCount = candidatesCount;
       var candidatesResults = $("#candidatesResults");
       candidatesResults.empty();
 
@@ -102,11 +104,34 @@ App = {
 
     }).then(function(isEnded) {
       if(isEnded) {
+        $(".candidate-tr").append("<th scope='col'> Vote Count </th>")
         $('#messageVote').html("The voting period is ended")
         $('form').hide();  
+
+        // tampilin count
+        var candidatesResults = $("#candidatesResults");
+        candidatesResults.empty();
+
+        var candidatesSelect = $('#candidatesSelect');
+        candidatesSelect.empty();
+
+        for (var i = 1; i <= candidateCount; i++) {
+          electionInstance.candidates(i).then(function (candidate) {
+            var id = candidate[0];
+            var name = candidate[1];
+            var count = candidate[2];
+
+            var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + count + "</td></tr>"
+            candidatesResults.append(candidateTemplate);
+          });
+        }
+        loader.hide();
+        content.show();
+      } else {
+        loader.hide();
+        content.show();
       }
-      loader.hide();
-      content.show();
+
 
     }).catch(function(error) {
       console.warn(error);
