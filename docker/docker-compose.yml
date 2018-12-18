@@ -1,14 +1,14 @@
 version: '3'
 services:
   bootnode:
-    build: .
+    image: ethereum/client-go:alltools-v1.8.20
     entrypoint: "/usr/local/bin/bootnode"
     command: "--nodekeyhex=6ec0e677651453b0e088b4a1294e7289fa462b38cdd5780313db82ed826bb90f --networkid=1 --verbosity=9"
     networks:
       ethereum:
         ipv4_address: 172.28.1.0
   miner1:
-    build: .
+    image: ethereum/client-go:alltools-v1.8.20
     entrypoint: "/bin/sh"
     command: ["-c", "geth init /opt/volume/genesis.json && geth --networkid=1 --nodiscover --verbosity=9 --nat=extip:172.28.1.1 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
     volumes:
@@ -23,7 +23,7 @@ services:
       ethereum:
         ipv4_address: 172.28.1.1
   # miner2:
-  #   build: .
+  #   image: ethereum/client-go:alltools-v1.8.20
   #   entrypoint: "/bin/sh"
   #   command: ["-c", "geth init /opt/volume/genesis.json && geth --networkid=1 --verbosity=9 --nat=extip:172.28.1.2 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
   #   volumes:
@@ -37,7 +37,7 @@ services:
   #     ethereum:
   #       ipv4_address: 172.28.1.2
   # miner3:
-  #   build: .
+  #   image: ethereum/client-go:alltools-v1.8.20
   #   entrypoint: "/bin/sh"
   #   command: ["-c", "geth init  /opt/volume/genesis.json && geth --networkid=1 --nodiscover --nat=extip:172.28.1.3 --bootnodes=enode://14d3baa6eeb405770232e32adfb5d9acc202455f79a5e82b9829eac47bde9d36c1cd0dabcc23ef89690f47b034d8781ba109a77a61ab1d37b5faf3a278ffba41@172.28.1.1:30303?discport=30301 --mine --minerthreads=1 --etherbase=0x373F339C91fD95FEA40eB86F9F9981770CA9300a --rpc --rpcaddr=0.0.0.0 --rpcport 8545 --rpcapi 'personal,db,eth,net,web3,txpool,miner'"]
   #   volumes:
